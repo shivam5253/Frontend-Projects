@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cricket Game</title>
+  <link rel="stylesheet" href="cricket.css">
+<audio id="win-sound" src="sounds/won.wav"></audio>
+<audio id="lose-sound" src="sounds\lose.flac"></audio>
+<audio id="tie-sound" src="sounds/tied.wav"></audio>
+<audio id="reset-sound" src="sounds/reset.wav"></audio>
+<img src="images\stadium.avif" alt="stadium" height="280">
+
+</head>
+<body>
+
+  <h1>Bat Ball Stump Game</h1>
+
+  <button onclick="playGame('Bat')">  <img src="images\bat.webp" alt="Bat" width="50"><br>Bat</button>
+  <button onclick="playGame('Ball')"><img src="images\ball.webp" alt="Ball" width="50"><br>Ball</button>
+  <button onclick="playGame('Stump')"><img src="images\wickets.webp" alt="Wickets" width="50"><br></button>
+  <button onclick="resetScore()"><img src="images\reset1.webp" alt="Reset" width="50">Reset</button>
+
+  <h3 id ="user-move"></h3>
+  <h3 id ="computer-move"></h3>
+  <h3 id ="result"></h3>
+  <h3 id ="score"></h3>
+
+  <script>
+    let scoreStr = localStorage.getItem('Score');
+    let score;
+
+    //  Score Initialization
+    if (scoreStr !== null) {
+      score = JSON.parse(scoreStr);
+    } else {
+      score = {
+        win: 0,
+        lost: 0,
+        tie: 0
+      };
+    }
+
+    //  Add display function to score object
+    score.displayScore = function () {
+      return `Our Total Score is: Won: ${score.win} | Lost: ${score.lost} | Tie: ${score.tie}`;
+    };
+  
+
+    //  Game Logic
+    function playGame(userChoice) {
+      const userChoiceMsg = `You have chosen ${userChoice}`;
+      
+      // generate computer choice
+      const randomNumber = Math.random() * 3;
+      let computerChoice;
+      if (randomNumber > 0 && randomNumber <= 1) {
+        computerChoice = 'Bat';
+      } else if (randomNumber > 1 && randomNumber <= 2) {
+        computerChoice = 'Ball';
+      } else {
+        computerChoice = 'Stump';
+      }
+      const computerChoiceMsg = `Computer choice is ${computerChoice}`;
+
+      // decide result
+      let resultMsg;
+      if (userChoice === computerChoice) {
+        score.tie++;
+        resultMsg = "It's a tie";
+        document.getElementById('tie-sound').play();
+      } else if (
+        (userChoice === 'Bat' && computerChoice === 'Ball') ||
+        (userChoice === 'Ball' && computerChoice === 'Stump') ||
+        (userChoice === 'Stump' && computerChoice === 'Bat')
+      ) {
+        score.win++;
+        resultMsg = "User Won!";
+        document.getElementById('win-sound').play();
+      } else {
+        score.lost++;
+        resultMsg = "Computer has Won";
+        document.getElementById('lose-sound').play();
+      }
+
+      // Save updated score
+      localStorage.setItem('Score', JSON.stringify(score));
+
+
+
+      document.querySelector('#user-move').innerText= userChoiceMsg;
+      document.querySelector('#computer-move').innerText= computerChoiceMsg;
+      document.querySelector('#result').innerText=resultMsg;
+      document.querySelector('#score').innerText= score.displayScore();
+
+
+
+//       alert(`${userChoiceMsg} and ${computerChoiceMsg}.
+      
+// So therefore, ${resultMsg}.
+      
+// ${score.displayScore()}`);
+    }
+
+    //  Reset Function
+    function resetScore() {
+      localStorage.clear();
+      score = {
+        win: 0,
+        lost: 0,
+        tie: 0
+      };
+      score.displayScore = function () {
+        return `Our Total Score is: Won: ${score.win} | Lost: ${score.lost} | Tie: ${score.tie}`;
+      };
+      //  Immediately update DOM
+      document.querySelector('#user-move').innerText = 'You have not played yet.';
+      document.querySelector('#computer-move').innerText = 'Computer has not played yet.';
+      document.querySelector('#result').innerText = 'Result will appear here.';
+      document.querySelector('#score').innerText = score.displayScore();
+      document.getElementById('reset-sound').play(); //  play reset sound
+
+      alert('Score has been reset.');
+
+    }
+  </script>
+</body>
+</html>

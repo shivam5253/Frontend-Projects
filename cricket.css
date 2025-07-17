@@ -1,0 +1,28 @@
+/* Page base styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #e8f0fe;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #222;
+}
+
+
+
+/* Heading */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+
+/* Buttons */
+button {
+  padding: 10px;
+  width: 110px;
+  height: 110px;
+  border: solid black;
+  border-radius: 50px;
+}
